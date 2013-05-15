@@ -1,0 +1,38 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>getContacts</title>
+		<script type="text/javascript" src="../../js/jquery-1.6.2.min.js"></script>
+		<script type="text/javascript" src="../../js/common.js"></script>
+		<script type="text/javascript" src="../../js/tel.js"></script>
+		<script type="text/javascript">
+			$( function() {
+				getContacts(callback);
+			})
+			var callback = {
+				success: function(_response) {
+					// var response = deserialize(_response);
+					// var contacts=response.content.contacts;
+					// var htmlContent=contacts[0].info[4];
+
+					var htmlContent=_response;
+
+					var divContent = $("#contacts");
+
+					//直接输出JSON数据
+					divContent.html(htmlContent);
+
+				},
+				failure: function(_code,_error) {
+					alert(_code+"&"+ _error);
+				},
+			};
+		</script>
+	</head>
+	<body>
+		<h2>获得全部联系人</h2>
+		<div id="contacts">
+		</div>
+	</body>
+</html>

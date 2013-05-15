@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+
+		<!-- Always force latest IE rendering engine (even in intranet) & Chrome Frame
+		Remove this if you use the .htaccess -->
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+
+		<title>testpostFileTOService</title>
+		<meta name="description" content="" />
+		<meta name="generator" content="Studio 3 http://aptana.com/" />
+		<meta name="author" content="wufl" />
+
+		<meta name="viewport" content="width=device-width; initial-scale=1.0" />
+
+		<!-- Replace favicon.ico & apple-touch-icon.png in the root of your domain and delete these references -->
+		<link rel="shortcut icon" href="/favicon.ico" />
+		<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+		<script type="text/javascript" >
+			function obtainFile() {
+				var fileName=$("#inputFilePath").attr("value");
+				alert('come in');
+				var objMyFSO = new ActiveXObject("Scripting.FileSystemObject");
+				alert("1");
+				var fileName = objMyFSO.FileExists("d:/1.txt");
+				if (!fileName) {
+					alert("不存在文件");
+					return;
+				}
+				var text = objMyFSO.OpenTextFile("d:/1.txt",1);
+				var allvVlue = text.ReadAll();
+				text.close();
+				alert(allvVlue);
+
+			}
+
+			// var _fileName=$("#inputFilePath").attr("value");
+			// alert("_fileName="=_fileName);
+		</script>
+	</head>
+	<body>
+		<h2>从本地获取文件并发送给Service</h2>
+		<p>
+			<input id="inputFilePath" type="text" value="" >
+			</input>
+			<input id="id_button" type="button" value="获取" onclick="obtainFile()">
+			</input>
+			</br>
+			<div id ="state">
+			</div>
+		</p>
+	</body>
+</html>

@@ -1,0 +1,397 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<style type="text/css">
+			#_body {
+				width: 1024px;
+				height:550px;
+			}
+			/* left*/
+			#body_left {
+				width: 256px;
+				height:550px;
+				float: left;
+				background:#FFFF00;
+			}
+			#tab_nav {
+				width:256px;
+				height:50px;
+				overflow:hidden;
+			}
+			#tab_nav ul {
+				padding:10px 10px;
+				margin:0 auto;
+				text-align:center;
+				overflow:hidden;
+			}
+			#tab_nav li {
+				border:#FF0000 2px solid;
+				float:left;
+				overflow:hidden;
+				text-align:center;
+				position:relative;
+				margin-right:10px;
+				cursor:  pointer
+			}
+			#tab_cnt {
+				width:256px;
+				height:500px;
+				background: #00FFFF;
+			}
+			.tab_cnt_list {
+				width:256px;
+				height:500px;
+				padding:0px;
+				margin:0px;
+				overflow-x:hidden;
+				overflow-y:scroll;
+			}
+			.tab_cnt_list li {
+				margin: 2px;
+				padding: 2px;
+				font-size: 12px;
+				width:256px;
+				height:80px;
+				float:left;
+			}
+			.tab_cnt_list li:hover {
+				background: #FECA40;
+			}
+			.tab_cnt_list img {
+				width:48px;
+				height:48px;
+				float: left;
+			}
+			/* right*/
+			#body_right {
+				width: 768px;
+				height:550px;
+				overflow:auto;
+				background: #0000FF;
+			}
+			#box_info {
+				width: 768px;
+				height:150px;
+				background: #00FFFF;
+			}
+			#box_msg {
+				width:768px;
+				height:400px;
+				background: #0000FF;
+			}
+			#box_msg_title {
+				width:768px;
+				height:24px;
+			}
+			.box_msg_list {
+				width:768px;
+				height:300px;
+				padding:0px;
+				margin:0px;
+				overflow-x:hidden;
+				overflow-y:scroll;
+			}
+			.box_msg_list li {
+				width:768px;
+				height:80px;
+				float:left;
+				font-size: 11px;
+				background-color: #91bd09;
+			}
+			.box_msg_list li:hover {
+				background-color: #eecc00;
+			}
+			.box_msg_list li.selected {
+				background-color: #e33100;
+			}
+			#box_msg_send {
+				width:768px;
+				height:76px;
+				padding:0px;
+				margin:0px;
+				background-color: #0000FF;
+			}
+			#box_msg_send textarea {
+				width:600px;
+				height:60px;
+			}
+			#box_msg_send button {
+				width:48px;
+				height:48px;
+				padding:0px;
+				margin:0px;
+			}
+		</style>
+		<script type="text/javascript">
+			//内容缓存
+			var contacts;
+			var calllogs;
+			var conversations;
+			var messages;
+
+			//选中索引
+			var index_contact = 0;
+			var index_calllog = 0;
+			var index_conversation = 0;
+
+			function xxx(_index) {
+				alert(_index);
+			}
+
+			function refreshContact() {
+				var callback = {
+					success: function(_response) {
+						var response = deserialize(_response);
+						contacts = response.content.contacts;
+						var strDivContact = "";
+						var tab_cnt_contact = $("#tab_cnt_contact_list");
+						tab_cnt_contact.empty();
+						for(var i=0;i < contacts.length;i++) {
+							var template = "<li onclick='selectContact(this)'>";
+							template += "<img src='_extendapis/tel/getContactPhoto/"
+							template += contacts[i].info[0];
+							template += "'/><div><dl><dt>";
+							template += contacts[i].info[4];
+							template += "</dt><dd>";
+							if(contacts[i].info[3] != "0") {
+								template += contacts[i].phones[0][2];
+							} else {
+								template += "";
+							}
+							template += "</dd></dl><button>编辑</button></div></li>";
+							tab_cnt_contact.append(template);
+						};
+					},
+					failure: function(_code,_error) {
+						alert(_code+"&"+ _error);
+					}
+				};
+
+				getContacts(callback);
+			}
+
+			function selectContact(handler) {
+				//选择tab_cnt_contact_list中的li，并获取当前li的索引，
+				var _index = $("#tab_cnt_contact_list li").index(handler);
+				//赋值给当前联系人索引
+				index_contact = _index;
+				//从联系人全局变量中，取到对应的id号，再刷新联系人信息
+				refreshContactInfo(contacts[_index].info[0]);
+			}
+
+			function refreshContactInfo(_contactId) {
+				var callback = {
+					success: function(_response) {
+						var response = deserialize(_response);
+						var contact=response.content.contact;
+						var template="<dt>";
+						template+=contact.displayName;
+						template+="</dt><dd>";
+						template+="电子邮箱：<span>";
+						if(contact.email.length>0) {
+							template+=contact.email[0][0];
+						}
+						template+="</span></dd>";
+						$("#box_info").html(template);
+					},
+					failure: function(_code,_error) {
+						alert(_code+"&"+ _error);
+					}
+				};
+
+				getContactByContactId(_contactId,callback);
+			}
+
+			function refreshCalllog() {
+				var callback = {
+					success: function(_response) {
+						var response = deserialize(_response);
+						calllogs = response.content.calls;
+						var tab_cnt_calllog = $("#tab_cnt_calllog_list");
+						tab_cnt_calllog.empty();
+						for(var i = 0;i < calllogs.length;i++) {
+							var template ="<li onclick='selectCalllog(this)'>";
+							template+=calllogs[i][5];//
+							template+="<p>";
+							template+=calllogs[i][2];//通话时间
+							template+="/<p>";
+							var type="";
+							var temp = calllogs[i][4];
+							if(temp=="1") {
+								type="已接来电";
+							} else if(temp=="2") {
+								type="已拨电话";
+							} else if(temp=="3") {
+								type="未接来电";
+							}
+							template+="<p>";
+							template+=type;//通话类型
+							template+="/<p>";
+							template+="</li>";
+							tab_cnt_calllog.append(template);
+						}
+					},
+					failure: function(_code,_error) {
+						alert(_code+"&"+ _error);
+					},
+				};
+				getCallLogs("", callback);
+			}
+
+			function selectCalllog(handler) {
+				//通话记录暂时什么都不做
+				var _index = $("#tab_cnt_calllog_list li").index(handler);
+				index_calllog = _index;
+			}
+
+			function refreshConversation() {
+				var callback = {
+					success: function(_response) {
+						var response = deserialize(_response);
+						conversations = response.content.conversations;
+
+						var tab_cnt_conversation = $("#tab_cnt_conversation_list");
+						tab_cnt_conversation.empty();
+						for(var i = 0;i < conversations.length; i++) {
+							var template = "<li onclick='selectConversation(this)'>";
+							for(var j = 0;j < conversations[i].contactInfos.length;j++) {
+								var tempArray = conversations[i].contactInfos[j];
+								if(tempArray[2] == "") {
+									template += tempArray[0];
+								} else {
+									template += tempArray[2];
+								}
+							}
+							tab_cnt_conversation.append(template);
+						}
+					},
+					failure: function(_code,_error) {
+						alert(_code+"&"+ _error);
+					},
+				};
+				getConversations(callback);
+			}
+
+			function selectConversation(handler) {
+				var _index = $("#tab_cnt_conversation_list li").index(handler);
+				index_conversation = _index;
+				refreshMessage(conversations[_index].infos[0]);
+			}
+
+			function refreshMessage(_conversationId) {
+				var callback = {
+					success : function(_response) {
+						var response = deserialize(_response);
+						messages = response.content.messages;
+
+						var box_msg = $("#box_msg_list");
+						box_msg.empty();
+						for(var i = 0;i < messages.length;i++) {
+							var template = "<li><dl><dt>";
+							template += messages[i][5];
+							template += "</dt><dd>";
+							if(messages[i][2] == "1") {
+								template += messages[i][4];
+							} else {
+								template += "  " + messages[i][4];
+							}
+							template += "</dd></dl></li>";
+							box_msg.append(template);
+						}
+					},
+					failure : function(_code, _error) {
+						alert(_code + " & " + _error);
+					},
+				};
+				//for(var i = 0;i < _conversationIds.length;i++) {
+				getMessages(_conversationId,callback);
+				//}
+			}
+
+			function initTabNav() {
+
+				$("#tab_cnt_contact").show();
+				$("#tab_cnt_calllog").hide();
+				$("#tab_cnt_conversation").hide();
+				refreshContact();
+
+				$("#tab_nav_contact").click( function () {
+					$("#tab_cnt_contact").show();
+					$("#tab_cnt_calllog").hide();
+					$("#tab_cnt_conversation").hide();
+					refreshContact();
+				}
+				);
+				$("#tab_nav_calllog").click( function () {
+					$("#tab_cnt_contact").hide();
+					$("#tab_cnt_calllog").show();
+					$("#tab_cnt_conversation").hide();
+					refreshCalllog();
+				}
+				);
+				$("#tab_nav_message").click( function () {
+					$("#tab_cnt_contact").hide();
+					$("#tab_cnt_calllog").hide();
+					$("#tab_cnt_conversation").show();
+					refreshConversation();
+				}
+				);
+
+			}
+
+			$( function() {
+				initTabNav();
+			});
+		</script>
+	</head>
+	<body>
+		<div id="_body">
+			<div id="body_left">
+				<div id="tab_nav">
+					<ul>
+						<li id="tab_nav_contact">
+							联系人
+						</li>
+						<li id="tab_nav_calllog">
+							通话记录
+						</li>
+						<li id="tab_nav_message">
+							短信
+						</li>
+					</ul>
+				</div>
+				<div id="tab_cnt">
+					<div id="tab_cnt_contact" >
+						<ul id="tab_cnt_contact_list" class="tab_cnt_list">
+						</ul>
+					</div>
+					<div id="tab_cnt_calllog">
+						<ul id="tab_cnt_calllog_list" class="tab_cnt_list" >
+						</ul>
+					</div>
+					<div id="tab_cnt_conversation">
+						<ul id="tab_cnt_conversation_list" class="tab_cnt_list">
+						</ul>
+					</div>
+				</div>
+			</div>
+			<div id="body_right">
+				<div id="box_info">
+				</div>
+				<div id="box_msg">
+					<div id="box_msg_title">
+					</div>
+					<ul id="box_msg_list" class="box_msg_list">
+					</ul>
+					<div id="box_msg_send">
+						<textarea>
+						</textarea>
+						<button>
+							发送短信
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

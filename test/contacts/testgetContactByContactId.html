@@ -1,0 +1,70 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>getContactByContactId</title>
+		<script type="text/javascript" src="../../js/jquery-1.6.2.min.js"></script>
+		<script type="text/javascript" src="../../js/common.js"></script>
+		<script type="text/javascript" src="../../js/tel.js"></script>
+		<script type="text/javascript">
+			$( function() {
+				getContacts(callback);
+				alert("contactId="+contactId);
+				$("#getContact").click( function() {
+					var contactId=$("#input_contactid").val();
+					getContactByContactId(contactId,callback2);
+				});
+			});
+			var callback = {
+				success: function(_response) {
+					// var response = deserialize(_response);
+					// var contacts=response.content.contacts;
+					// var htmlContent=contacts[0].info[4];
+
+					var htmlContent=_response;
+
+					var divContent = $("#contacts");
+
+					//直接输出JSON数据
+					divContent.html(htmlContent);
+
+				},
+				failure: function(_code,_error) {
+					alert(_code+"&"+ _error);
+				},
+			};
+			var callback2 = {
+				success: function(_response) {
+					// var response = deserialize(_response);
+					// var contacts=response.content.contacts;
+					// var htmlContent=contacts[0].info[4];
+
+					var htmlContent=_response;
+
+					var divContent = $("#response");
+
+					//直接输出JSON数据
+					divContent.html(htmlContent);
+
+				},
+				failure: function(_code,_error) {
+					alert(_code+"&"+ _error);
+				},
+			};
+		</script>
+	</head>
+	<body>
+		<h2>根据ContactId获取联系人详细信息</h2>
+		<h6>提示：根据下面的联系人列表中的info[0]:的contactId输入到input里</h6>
+		<input type="text" id="input_contactid"/>
+		<input type="button" id="getContact" value="获得"/>
+
+		<h6>提示应答结果</h6>
+		<div id="response">
+		</div>
+
+		<h6>联系人列表</h6>
+		<div id="contacts">
+		</div>
+	</body>
+</html>

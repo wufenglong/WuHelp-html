@@ -1,0 +1,30 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>无标题文档</title>
+<script type="text/javascript" src="../../js/jquery-1.6.1.min.js"></script>
+<script type="text/javascript" src="../../js/common.js"></script>
+<script type="text/javascript" src="../../js/tel.js"></script>
+<script type="text/javascript">
+	$(function(){
+		getRawContact(_callback);
+	});
+	var _callback = {
+				success: function(_response) {
+					var htmlContent=_response;
+					var divContent = $("#rowid");
+					divContent.html(htmlContent);
+				},
+				failure: function(_code,_error) {
+					alert(_code+"&"+ _error);
+				},
+		};	
+</script>
+</head>
+
+<body>
+<h2>获得联系人id（全部）</h2>
+<div id="rowid"></div>
+</body>
+</html>

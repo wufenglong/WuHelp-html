@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+
+		<!-- Always force latest IE rendering engine (even in intranet) & Chrome Frame
+		Remove this if you use the .htaccess -->
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+
+		<title>getActivityLabels</title>
+		<meta name="description" content="" />
+		<meta name="generator" content="Studio 3 http://aptana.com/" />
+		<meta name="author" content="wufl" />
+
+		<meta name="viewport" content="width=device-width; initial-scale=1.0" />
+
+		<!-- Replace favicon.ico & apple-touch-icon.png in the root of your domain and delete these references -->
+		<link rel="shortcut icon" href="/favicon.ico" />
+		<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+		<script type="text/javascript" src="../../js/jquery-1.6.2.min.js"></script>
+		<script type="text/javascript" src="../../js/common.js"></script>
+		<script type="text/javascript" src="../../js/app.js"></script>
+		<script type="text/javascript" >
+			$( function() {
+				getActivitys(Callback);
+			});
+			var Callback= {
+				success: function(_response) {
+					var htmldivContent=_response;
+					var divContent = $("#activitysList");
+					divContent.html(htmldivContent);
+				},
+				failure: function(_code,_error) {
+					alert(_code+"&"+ _error);
+				},
+			};
+
+			function getActivityLabelsNow () {
+				var packageName=$("#inputPackageName").attr("value");
+				var activityName=$("#inputActivityName").attr("value");
+				var obj= new Object();
+				obj.packageName=packageName;
+				obj.activityName=activityName;
+				var activityInfos = new Array(obj);
+				getActivityLabels(activityInfos,Callback2);
+			}
+
+			var Callback2= {
+				success: function(_response) {
+					var htmldivContent=_response;
+					var divContent = $("#content");
+					divContent.html(htmldivContent);
+				},
+				failure: function(_code,_error) {
+					alert(_code+"&"+ _error);
+				},
+			};
+		</script>
+	</head>
+	<body>
+		<h2>功能:获取Activity名称</h2>
+		<p>
+			提示：从下面activity列表中找到"packageName":"com.m1.mym1","activityName":"com.m1.mym1.Login"复制到下面两个input
+		</P>
+		</br>
+		PackageName
+		<input id="inputPackageName" type="text" value="com.android.settings" >
+		</input>
+		ActivityName
+		<input id="inputActivityName" type="text" value="com.android.settings.framework.activity.HtcSettings" >
+		</input>
+		<button onclick="getActivityLabelsNow()">
+			获得
+		</button>
+		<h6>显示返回结果："label"标签后面是Activity名</h6>
+		<div id ="content">
+		</div>
+		<h6>下面显示手机中的activity列表和对应的包名</h6>
+		<div id ="activitysList">
+		</div>
+	</body>
+</html>

@@ -1,0 +1,44 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>getContactsByPhoneNumber</title>
+		<script type="text/javascript" src="../../js/jquery-1.6.2.min.js"></script>
+		<script type="text/javascript" src="../../js/common.js"></script>
+		<script type="text/javascript" src="../../js/tel.js"></script>
+		<script type="text/javascript">
+			$( function() {
+				$("#getContactDetail").click( function() {
+					var _phoneNumber = $("#phone").val();
+					alert(_phoneNumber);
+					getContactsByPhoneNumber(_phoneNumber,_callback);
+				});
+			});
+			var _callback = {
+				success: function(_response) {
+					var htmlContent=_response;
+					var divContent = $("#contact_detail");
+					divContent.html(htmlContent);
+				},
+				failure: function(_code,_error) {
+					alert(_code+"&"+ _error);
+				},
+			};
+		</script>
+	</head>
+
+	<body>
+		<h2>根据联系人电话号码获取联系人详细信息</h2>
+		<h6>提示：在手机里找个已有联系人电话写在input里</h6>
+		<label for="phone">
+			phoneNumber：
+		</label>
+		<input type="text" id="phone">
+		<input type="button" id="getContactDetail" value="获取联系人详细信息">
+		<div>
+			联系人详细信息：
+			<br/>
+			<span id="contact_detail"></span>
+		</div>
+	</body>
+</html>

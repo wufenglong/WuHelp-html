@@ -1,0 +1,59 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>removeCallLogs</title>
+		<script type="text/javascript" src="../../js/jquery-1.6.2.min.js"></script>
+		<script type="text/javascript" src="../../js/common.js"></script>
+		<script type="text/javascript" src="../../js/tel.js"></script>
+		<script type="text/javascript">
+			$( function() {
+				$("#del").click( function() {
+					var callLogIds = new Array($("#log1").val(),$("#log2").val());
+					removeCallLogs(callLogIds, removeCallback);
+				});
+			});
+			$( function() {
+				getCallLogs("", allLogCallback);
+			});
+			var allLogCallback = {
+				success: function(_response) {
+					var htmlContent=_response;
+					var divContent = $("#allLog");
+					divContent.html(htmlContent);
+				},
+				failure: function(_code,_error) {
+					alert(_code+"&"+ _error);
+				}
+			};
+
+			var removeCallback = {
+				success: function(_response) {
+					//var response = deserialize(_response);
+					//var count = response.content.count;
+					var htmlcontent=_response;
+					var divContent = $("#num");
+					divContent.html(htmlcontent);
+				},
+				failure: function(_code,_error) {
+					alert(_code+"&"+ _error);
+				},
+			};
+		</script>
+	</head>
+
+	<body>
+		<h2>功能：删除通话记录（id）</h2>
+		<h6>提示：从下面所有通话记录，请输入id进行删除，如["2","13811115788","1306635063637","0","2","A"],["3","13811115788","1306642712211","0","2","A"]中的"2"</h6>
+		<br/>
+		应答结果：
+		<span id="num"></span>
+		<br/>
+		<input type="text" id="4"/>
+		<input type="text" id="5"/>
+		<input type="button" id="del" value="删除"/>
+
+		<div id="allLog">
+		</div>
+	</body>
+</html>

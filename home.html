@@ -1,0 +1,348 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<title>首页</title>
+		<style type="text/css">
+			#body {
+				margin: auto;
+				width:1024px;
+				height:550px;
+				background:#0000FF;
+			}
+			#body_left {
+				width: 256px;
+				height:550px;
+				float: left;
+				background:#FFFF00;
+			}
+			#left_state {
+				height:30px;
+				background:#060;
+			}
+			#left_button {
+				height:30px;
+				background:#090;
+			}
+			#left_phoneInfo {
+				height:490px;
+				background:#0C0;
+			}
+			#left_selectdevice {
+				height:490px;
+				background:#0C0;
+			}
+			#body_main {
+				width: 768px;
+				height:550px;
+				overflow:auto;
+				background: #00ffFF;
+			}
+			.main_title_nav {
+				height:20px;
+				background:#00ffFF;
+			}
+			.main_title_nav p {
+				float: left;
+			}
+			.main_title_nav a {
+				float: right;
+			}
+			#main_AD {
+				height:137px;
+				background:#00F;
+			}
+			#main_AD img {
+				width:766px;
+				height: 135px;
+			}
+			#main_app {
+				height:137px;
+				background:#06F;
+			}
+			#main_app_content ul {
+				padding:10px 10px;
+				margin:0 auto;
+				text-align:center;
+				overflow:hidden;
+			}
+			#main_app_content li {
+				width:80px;
+				height:90px;
+				float:left;
+				overflow:hidden;
+				text-align:center;
+				position:relative;
+				margin-right:10px;
+				cursor:  pointer
+			}
+			#main_app_content img {
+				width:50px;
+				height:50px;
+			}
+			#main_video {
+				height:137px;
+				background:#09F;
+			}
+			#main_music {
+				height:137px;
+				background:#0CF;
+			}
+			/*鼠标滑过显示、隐藏安装按键效果 start*/
+			p.show_install {
+				display:none;
+			}
+			.hover p.show_install {
+				display:block;
+			}
+			/*鼠标滑过显示、隐藏安装按键效果 end*/
+		</style>
+		<script type="text/javascript">
+			/*与手机是否通信成功标志*/
+			var isConnect=true;
+
+			$( function() {
+				if(isConnect) {
+					$("#left_phoneInfo").show();
+					$("#left_selectdevice").hide();
+				}
+				init();
+			});
+			$( function() {
+				//显示手机信息button被点击
+				$("#button_PhoneInfo").click( function() {
+					$("#left_phoneInfo").show();
+					$("#left_selectdevice").hide();
+				});
+				//选择设备button被点击
+				$("#button_SelectDevice").click( function() {
+					$("#left_phoneInfo").hide();
+					$("#left_selectdevice").show();
+				});
+				/*left跳转 start*/
+				$("#gotoContact").click( function() {
+					$("#body").load("tel.html");
+				});
+				$("#gotoSms").click( function() {
+					$("#body").load("tel.html");
+				});
+				$("#gotoApp").click( function() {
+					$("#body").load("app.html");
+				});
+				$("#gotoMedia_video").click( function() {
+					$("#body").load("media_video.html");
+				});
+				$("#gotoMedia_music").click( function() {
+					$("#body").load("media_music.html");
+				});
+				$("#gotoMedia_image").click( function() {
+					$("#body").load("media_image.html");
+				});
+				$("#gotoEbook").click( function() {
+					$("#body").load("ebook.html");
+				});
+				/*left跳转 end*/
+
+				/*排行中更多Link跳转 start*/
+				$("#moreAppLink").click( function() {
+					$("#body").load("app.html");
+				});
+				$("#moreVideoLink").click( function() {
+					$("#body").load("media_video.html");
+				});
+				$("#moreMusicLink").click( function() {
+					$("#body").load("media_music.html");
+				});
+				/*排行中更多Link跳转 end*/
+			});
+			function init() {
+				setConnectState();
+				refreshAD();
+				refreshAppRank();
+				//连接成功，获得联系人，短信，应用等的个数并显示在首页左框中
+			}
+
+			/*设置id=left_state连接状态:检测与手机连接情况 ，成功、失败两种*/
+			function setConnectState() {
+				var template="";
+				if(isConnect) {
+					template+="<img src='img/homepage/conn_yes.png'></img>";
+					template+="已连接"
+				} else {
+					template+="<img src='img/homepage/conn_no.png'></img>";
+					template+="未连接"
+				}
+				$("#left_state").append(template);
+			}
+
+			/*刷新广告*/
+			function refreshAD () {
+				var callback = {
+					success: function(_response) {
+						var response = deserialize(_response);
+						var ad = response.content.homepageAD;
+						var url = ad[0].url;
+						var template="<img src='";
+						template+=url;
+						template+="'></img>";
+
+						$("#main_AD").append(template);
+					},
+					failure: function(_code,_error) {
+						alert(_code+"&"+ _error);
+					}
+				};
+				getHomepageAD(callback);
+			}
+
+			/*刷新应用排行*/
+			function refreshAppRank() {
+				var callback = {
+					success: function(_response) {
+
+						var response = deserialize(_response);
+						var apps = response.content.homepageAppRank;
+
+						var template="<ul>";
+						for (var i=0; i < apps.length; i++) {
+							template+="<li onmouseover=\"addclass(this,\'hover\')\" onmouseout=\"deleteclass(this,\'hover\')\">";
+							template+="<img src='";
+							template+=apps[i].url;
+							template+="'></img>";
+							template+="<p>";
+							template+=apps[i].name;
+							template+="</p>"
+							//拼安装按钮
+							template+="<p class='show_install'><input type='button' value='安装' onclick='downloadANDinstallApk(";
+							template+=apps[i].id;
+							template+=")'></input>";
+							template+="</p>"
+							template+="</li>";
+						}
+						template+="</ul>";
+						$("#main_app_content").append(template);
+					},
+					failure: function(_code,_error) {
+						alert(_code+"&"+ _error);
+					}
+				};
+				getHomepageAppRank(callback);
+			}
+
+			/*下载并安装app*/
+			function downloadANDinstallApk (_id) {
+				alert(_id);
+			}
+		</script>
+	</head>
+	<body>
+		<!-- 内容start-->
+		<div id="body">
+			<!-- 左框start-->
+			<div id="body_left">
+				<div id="left_state">
+				</div>
+				<div id="left_button">
+					<input name="" type="button" id="button_SelectDevice" value="选择设备"  />
+					<input name="" type="button"  id="button_PhoneInfo"  value="手机信息" />
+				</div>
+				<div id="left_phoneInfo">
+					<ul>
+						<!--跳转到联系人和短信页中的联系人列表-->
+						<li id="gotoContact">
+							<img src="img/homepage/homepage_phoneinfo_contact.png">
+							<p>
+								596个联系人
+							</p>
+						</li>
+						<!--跳转到联系人和短信页中的短信列表-->
+						<li id="gotoSms">
+							<img src="img/homepage/homepage_phoneinfo_sms.png">
+							<p>
+								891条短信
+							</p>
+						</li>
+						<!--跳转到软件与游戏页-->
+						<li id="gotoApp">
+							<img src="img/homepage/homepage_phoneinfo_app.png">
+							<p>
+								891个应用程序
+							</p>
+						</li>
+						<!--跳转到视频页-->
+						<li id="gotoMedia_video">
+							<img src="img/homepage/homepage_phoneinfo_video.png">
+							<p>
+								0个视频
+							</p>
+						</li>
+						<!--跳转到音乐页-->
+						<li id="gotoMedia_music">
+							<img src="img/homepage/homepage_phoneinfo_music.png">
+							<p>
+								57个音乐
+							</p>
+						</li>
+						<!--跳转到图片页-->
+						<li id="gotoMedia_image">
+							<img src="img/homepage/homepage_phoneinfo_image.png">
+							<p>
+								57个图片
+							</p>
+						</li>
+						<!--跳转到电子书页-->
+						<li id="gotoEbook">
+							<img src="img/homepage/homepage_phoneinfo_ebook.png">
+							<p>
+								0个电子书
+							</p>
+						</li>
+					</ul>
+				</div>
+				<div id="left_selectdevice">
+					此处显示  id "left_selectdevice" 的内容
+				</div>
+			</div>
+			<!-- 左框end-->
+			<!-- 显示内容区start-->
+			<div id="body_main">
+				<!--广告条 start-->
+				<div id="main_AD">
+				</div>
+				<!--广告条 end-->
+				<div id="main_app">
+					<div class="main_title_nav">
+						<p>
+							应用排行
+						</p>
+						<a id="moreAppLink" href="#">更多</a>
+					</div>
+					<div id="main_app_content">
+					</div>
+				</div>
+				<div id="main_video">
+					<div class="main_title_nav">
+						<p>
+							视频排行
+						</p>
+						<a id="moreVideoLink"href="#">更多</a>
+					</div>
+					<div id="main_video_content">
+					</div>
+				</div>
+				<div id="main_music">
+					<div class="main_title_nav">
+						<p>
+							音乐排行
+						</p>
+						<a id="moreMusicLink" href="#">更多</a>
+					</div>
+					<div id="main_music_content">
+					</div>
+				</div>
+			</div>
+			<!-- 显示内容区end-->
+		</div>
+		<!--内容 end-->
+	</body>
+</html>

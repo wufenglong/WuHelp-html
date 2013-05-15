@@ -1,0 +1,60 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>无标题文档</title>
+		<script type="text/javascript" src="../../js/jquery-1.6.2.min.js"></script>
+		<script type="text/javascript" src="../../js/common.js"></script>
+		<script type="text/javascript" src="../../js/tel.js"></script>
+		<script type="text/javascript">
+			$( function() {
+				$("#deleteContact").click( function() {
+					var contactIds = new Array($("#contact1").val(),$("#contact2").val());
+					delContacts (contactIds,delContactCallback);
+				});
+			});
+			$( function() {
+				getContacts(allContactcallback);
+			});
+			var allContactcallback = {
+				success: function(_response) {
+
+					var htmlContent=_response;
+					var divContent = $("#contacts");
+
+					//直接输出JSON数据
+					divContent.html(htmlContent);
+				},
+				failure: function(_code,_error) {
+					alert(_code+"&"+ _error);
+				},
+			};
+			var delContactCallback = {
+				success: function(_response) {
+					//var response = deserialize(_response);
+					//var count = response.content.deleted;
+					var htmlcontent =_response;
+					var divContent = $("#num");
+					divContent.html(htmlcontent);
+				},
+				failure: function(_code,_error) {
+					alert(_code+"&"+ _error);
+				},
+			};
+		</script>
+	</head>
+
+	<body>
+		<h2>删除联系人</h2>
+		应答：
+		<span id="num"></span>
+		<br/>
+		<input type="text" id="contact1"/>
+		<input type="text" id="contact2"/>
+		<input type="button" id="deleteContact" value="删除联系人"/>
+		<br/>
+		<h2>下面为全部联系人列表，请根据id删除：</h2>
+		<div id="contacts">
+		</div>
+	</body>
+</html>

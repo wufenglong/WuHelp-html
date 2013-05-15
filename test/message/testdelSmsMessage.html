@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+
+		<!-- Always force latest IE rendering engine (even in intranet) & Chrome Frame
+		Remove this if you use the .htaccess -->
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+
+		<title>delSmsMessage</title>
+		<meta name="description" content="" />
+		<meta name="generator" content="Studio 3 http://aptana.com/" />
+		<meta name="author" content="wufl" />
+
+		<meta name="viewport" content="width=device-width; initial-scale=1.0" />
+
+		<!-- Replace favicon.ico & apple-touch-icon.png in the root of your domain and delete these references -->
+		<link rel="shortcut icon" href="/favicon.ico" />
+		<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+		<script type="text/javascript" src="../../js/jquery-1.6.2.min.js"></script>
+		<script type="text/javascript" src="../../js/common.js"></script>
+		<script type="text/javascript" src="../../js/tel.js"></script>
+		<script type="text/javascript">
+			var Callback = {
+				success: function(_response) {
+
+					var htmlContent=_response;
+					var divContent = $("#content");
+
+					//直接输出JSON数据
+					divContent.html(htmlContent);
+				},
+				failure: function(_code,_error) {
+					alert(_code+"&"+ _error);
+				},
+			};
+
+			function delSmsMessageNow() {
+				var id1=$("#inputOne").attr("value");
+				var id2 =$("#inputTwo").attr("value");
+				alert(id1 +"&"+id2);
+				var smsIds = new Array();
+				smsIds[0]=id1;
+				smsIds[1]=id2;
+
+				delSmsMessage(smsIds,Callback);
+			}
+		</script>
+	</head>
+	<body>
+		<h2>功能： 删除单条短信（含多条）</h2>
+		<h6>提示：在getMessages的接口返回数据中（会话内容：），找到"messages":[["608","52","2"中的608，加入inputOne中/h6>
+		</br></br>
+		一个ID
+		<input id="inputOne" type="text" value="" >
+		</input>
+		再一个ID
+		<input id="inputTwo" type="text" value="" >
+		</input>
+		<button onclick="delSmsMessageNow()">
+			删除
+		</button>
+		<div id="content">
+		</div>
+	</body>
+</html>

@@ -1,0 +1,194 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<title>机锋助手</title>
+		<style type="text/css">
+			* {
+				font-size:12px;
+				list-style:none;
+				margin:0;
+				padding:0;
+			}
+			#header {
+				margin: auto;
+				width:1024px;
+				height:100px;
+				background:#00FFFF;
+			}
+			#body {
+				margin: auto;
+				width:1024px;
+				height:550px;
+				background:#0000FF;
+			}
+			
+			#footer {
+				margin: auto;
+				width:1024px;
+				height:30px;
+				background:#FF00FF;
+			}
+			#tab_title {
+				width:100%;
+				height:100%;
+				overflow:hidden;
+				background:#6699FF;
+			}
+			#tab_title ul {
+				padding:10px 10px;
+				margin:0 auto;
+				text-align:center;
+				overflow:hidden;
+			}
+			#tab_title li {
+				width:80px;
+				height:90px;
+				float:left;
+				overflow:hidden;
+				text-align:center;
+				position:relative;
+				margin-right:10px;
+				cursor:  pointer
+			}
+			#tab_title img {
+				width:64px;
+				height:64px;
+			}
+		</style>
+		<script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
+		<link rel="stylesheet" href="css/jqthemes/jquery.ui.all.css">
+		<script src="js/jqui/jquery.ui.core.min.js"></script>
+		<script src="js/jqui/jquery.ui.widget.min.js"></script>
+		<script src="js/jqui/jquery.ui.mouse.min.js"></script>
+		<script src="js/jqui/jquery.ui.draggable.min.js"></script>
+		<script src="js/jqui/jquery.ui.position.min.js"></script>
+		<script src="js/jqui/jquery.ui.resizable.min.js"></script>
+		<script src="js/jqui/jquery.ui.dialog.min.js"></script>
+		<!---->
+		<script type="text/javascript" src="js/env.js"></script>
+		<script type="text/javascript" src="js/tel.js"></script>
+		<script type="text/javascript" src="js/common.js"></script>
+		<script type="text/javascript" src="js/home.js"></script>
+		
+		<script type="text/javascript">
+		
+			$( function() {
+			
+				//动态创建对话框
+				$("#create_dialog").click( function() {
+					var footer = $("#footer");
+					footer.append("<div id='dialog-modal' title='Basic modal dialog'>sdfsdfsdfsdf</div>");
+					$("#dialog-modal").dialog({
+						height: 140,
+						resizable: false
+					});
+				}
+				);
+
+				$("#body").load("home.html");
+
+				$("#home").click( function () {
+					$("#body").load("home.html");
+				});
+				$("#tel").click( function () {
+					$("#body").load("tel.html");
+				});
+				$("#app").click( function () {
+					$("#body").load("app.html");
+				});
+				$("#media_video").click( function () {
+					$("#body").load("media_video.html");
+				});
+				$("#media_music").click( function () {
+					$("#body").load("media_music.html");
+				});
+				$("#media_image").click( function () {
+					$("#body").load("media_image.html");
+				});
+				$("#ebook").click( function () {
+					$("#body").load("ebook.html");
+				});
+				$("#task").click( function () {
+					$("#body").load("task.html");
+				});
+				var callbackHeartbeat = {
+					success: function(_response) {
+						var response = deserialize(_response);
+						var events =response.content.events;
+
+						if(events.sms == "true") {
+							alert("你收到一个新短信");
+						} else if(events.mms == "true") {
+							alert("你收到一个新彩信");
+						}
+					},
+					failure: function(_code,_error) {
+						//alert(_code+"&"+ _error);
+					}
+				};
+
+				//startHeartbeat(callbackHeartbeat);
+			});
+		
+		</script>
+	</head>
+	<body>
+		<div id="header">
+			<div id="tab_title">
+				<ul>
+					<li id="home">
+						<img src="img/icon.gif" >
+						</img>
+						<h6>首页</h6>
+					</li>
+					<li id="tel">
+						<img src="img/icon.gif" >
+						</img>
+						<h6>联系人和短信</h6>
+					</li>
+					<li id="app">
+						<img src="img/icon.gif">
+						</img>
+						<h6>应用</h6>
+					</li>
+					<li id="media_video">
+						<img src="img/icon.gif" >
+						</img>
+						<h6>视频</h6>
+					</li>
+					<li id="media_music">
+						<img src="img/icon.gif" >
+						</img>
+						<h6>音乐铃声</h6>
+					</li>
+					<li id="media_image">
+						<img src="img/icon.gif" >
+						</img>
+						<h6>图片壁纸</h6>
+					</li>
+					<li id="ebook">
+						<img src="img/icon.gif" >
+						</img>
+						<h6>电子书</h6>
+					</li>
+					<li id="task">
+						<img src="img/icon.gif">
+						</img>
+						<h6>任务管理</h6>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<!-- 内容start-->
+		<div id="body">
+			
+		</div>
+		<!-- 内容end-->
+		<div id="footer">
+			<button id="create_dialog">
+				创建对话框
+			</button>
+		</div>
+	</body>
+</html>

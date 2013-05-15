@@ -1,0 +1,36 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>getCallLogs</title>
+		<script type="text/javascript" src="../../js/jquery-1.6.2.min.js"></script>
+		<script type="text/javascript" src="../../js/common.js"></script>
+		<script type="text/javascript" src="../../js/tel.js"></script>
+		<script type="text/javascript">
+			$( function() {
+				$("#getCallLog").click( function() {
+				 	getCallLogs($("#phone").val(), _callback);
+				});
+			});
+			var _callback = {
+				success: function(_response) {
+					var htmlContent=_response;
+					var divContent = $("#callLog");
+					divContent.html(htmlContent);
+				},
+				failure: function(_code,_error) {
+					alert(_code+"&"+ _error);
+				},
+			};
+		</script>
+	</head>
+
+	<body>
+		<h2>获取通话记录</h2>当号码为空或者为""时，为全部记录
+		<br/>
+		<input type="text" id="phone"/>
+		<input type="button" id="getCallLog" value="获取通话记录"/>
+		<div id="callLog">
+		</div>
+	</body>
+</html>
